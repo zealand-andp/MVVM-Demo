@@ -1,4 +1,4 @@
-package net.awrp.mvvmdemo;
+package net.awrp.mvvmdemo.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import net.awrp.mvvmdemo.R;
+
+public class AndroidView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
