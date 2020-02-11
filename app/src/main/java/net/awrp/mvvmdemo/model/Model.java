@@ -2,7 +2,7 @@ package net.awrp.mvvmdemo.model;
 
 public class Model {
 
-    private String data;
+    private String data = "Hello";
 
     public String getData() {
         return data;
