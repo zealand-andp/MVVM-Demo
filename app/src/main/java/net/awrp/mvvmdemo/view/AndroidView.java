@@ -1,8 +1,6 @@
 package net.awrp.mvvmdemo.view;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.View;
@@ -11,9 +9,12 @@ import android.widget.TextView;
 
 import net.awrp.mvvmdemo.R;
 
+import java.util.Observable;
+import java.util.Observer;
+
 public class AndroidView extends AppCompatActivity {
 
-    private AndroidLowerCaseViewModel lowerCaseViewModel;
+    private LowerCasePresenter lowerCaseViewModel = new LowerCasePresenter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,22 +23,25 @@ public class AndroidView extends AppCompatActivity {
 
         observeViewModel();
 
+        TextView outputView = (TextView) findViewById(R.id.outputView);
+        outputView.setText(lowerCaseViewModel.getPresentableData());
+
+
         EditText inputText = (EditText) findViewById(R.id.inputText);
-        inputText.setText(lowerCaseViewModel.getPresentableData().getValue());
+        inputText.setText(lowerCaseViewModel.getPresentableData());
     }
 
     private void observeViewModel() {
-        lowerCaseViewModel = new ViewModelProvider(this).get(AndroidLowerCaseViewModel.class);
-
-        final Observer<String> stringObserver = new Observer<String>() {
+        lowerCaseViewModel.addObserver(new Observer() {
             @Override
-            public void onChanged(String s) {
-                TextView outputView = (TextView) findViewById(R.id.outputView);
-                outputView.setText(s);
+            public void update(Observable o, Object arg) {
+                if (o instanceof LowerCasePresenter) {
+                    String data = ((LowerCasePresenter) o).getPresentableData();
+                    TextView outputView = (TextView) findViewById(R.id.outputView);
+                    outputView.setText(data);
+                }
             }
-        };
-
-        lowerCaseViewModel.getPresentableData().observe(this, stringObserver);
+        });
     }
 
     public void enterInput(View view) {
