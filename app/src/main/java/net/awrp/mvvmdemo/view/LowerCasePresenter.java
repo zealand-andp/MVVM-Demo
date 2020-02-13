@@ -8,9 +8,10 @@ import java.util.Observer;
 public class LowerCasePresenter extends Observable {
 
     private String presentableData;
-    private Model model = new Model();
+    private Model model;
 
-    public LowerCasePresenter() {
+    public LowerCasePresenter(Model existingModel) {
+        model = existingModel;
         observeModel(model);
         presentableData = getTransformedData(model.getData());
     }
