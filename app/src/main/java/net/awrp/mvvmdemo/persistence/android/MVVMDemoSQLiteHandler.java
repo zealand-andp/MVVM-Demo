@@ -5,49 +5,47 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.awrp.mvvmdemo.model.DataProvider;
 import net.awrp.mvvmdemo.model.Model;
 
 import java.util.Observable;
 import java.util.Observer;
 
-public class MVVMDemoSQLiteHandler implements DataProvider {
+public class MVVMDemoSQLiteHandler {
 
     private Model model;
     private MVVMDemoSQLiteHelper helper;
 
-    public MVVMDemoSQLiteHandler(Context context, Model model) {
+    public MVVMDemoSQLiteHandler(Context context, Model existingModel) {
         helper = new MVVMDemoSQLiteHelper(context);
 
-        if (model == null) {
-            this.model = new Model();
+        if (existingModel == null) {
+            model = new Model();
+            model.setData(readData());
         }
         else {
-            this.model = model;
-            writeData(model.getData());
+            model = existingModel;
+            writeData(existingModel.getData());
         }
-        this.model.setDataProvider(this);
 
         observeModel();
     }
 
-    private void observeModel() {
-        model.addObserver(new Observer() {
-            @Override
-            public void update(Observable o, Object arg) {
-                if (o instanceof Model) {
-                    String data = ((Model) o).getData();
-                    writeData(data);
+        private void observeModel() {
+            model.addObserver(new Observer() {
+                @Override
+                public void update(Observable o, Object arg) {
+                    if (o instanceof Model) {
+                        String data = ((Model) o).getData();
+                        writeData(data);
+                    }
                 }
-            }
-        });
+            });
     }
 
     public Model getModel() {
         return model;
     }
 
-    @Override
     public String readData() {
         SQLiteDatabase db = helper.getReadableDatabase();
         String[] columns = new String[] {MVVMDemoSQLiteHelper.DATA};
@@ -64,7 +62,6 @@ public class MVVMDemoSQLiteHandler implements DataProvider {
         return data;
     }
 
-    @Override
     public void writeData(String data) {
         SQLiteDatabase db = helper.getWritableDatabase();
         ContentValues values = new ContentValues();

@@ -8,9 +8,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import net.awrp.mvvmdemo.R;
-import net.awrp.mvvmdemo.model.DataProvider; // BAD
-import net.awrp.mvvmdemo.model.Model; // BAD
-import net.awrp.mvvmdemo.persistence.android.MVVMDemoSQLiteHandler; // REALLY BAD
+import net.awrp.mvvmdemo.model.Model; // NOT GOOD
+import net.awrp.mvvmdemo.persistence.android.MVVMDemoSQLiteHandler; // BAD
+import net.awrp.mvvmdemo.persistence.FirebaseHandler; // REALLY BAD
 
 import java.util.Observable;
 import java.util.Observer;
@@ -24,7 +24,8 @@ public class AndroidView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initialiseModules();
+        initialiseModulesWithSQLite();
+//        initialiseModulesWithFirebase();
 
         observePresenter();
 
@@ -35,13 +36,20 @@ public class AndroidView extends AppCompatActivity {
         inputText.setText(lowerCasePresenter.getPresentableData());
     }
 
-    // Creates a DataProvider, which in turn creates and initialises the Model.
+    // Creates Persistence, which in turn creates and initialises the Model.
     // The Model is then passed to a new Presenter.
     // This method makes AndroidView dependent on things that it should not know about,
     // but it is the best trade-off because AndroidView has the needed android.content.Context.
-    private void initialiseModules() {
-        DataProvider dataProvider = new MVVMDemoSQLiteHandler(getApplicationContext(), null);
+    private void initialiseModulesWithSQLite() {
+        MVVMDemoSQLiteHandler dataProvider = new MVVMDemoSQLiteHandler(getApplicationContext(), null);
         Model model = ((MVVMDemoSQLiteHandler) dataProvider).getModel();
+        lowerCasePresenter = new LowerCasePresenter(model);
+    }
+
+    // Same as above, but with Firebase
+    private void initialiseModulesWithFirebase() {
+        FirebaseHandler dataProvider = new FirebaseHandler(null);
+        Model model = ((FirebaseHandler) dataProvider).getModel();
         lowerCasePresenter = new LowerCasePresenter(model);
     }
 
