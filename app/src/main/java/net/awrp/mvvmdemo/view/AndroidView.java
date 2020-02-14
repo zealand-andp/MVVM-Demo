@@ -24,8 +24,8 @@ public class AndroidView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initialiseModulesWithSQLite();
-//        initialiseModulesWithFirebase();
+//        initialiseModulesWithSQLite();
+        initialiseModulesWithFirebase();
 
         observePresenter();
 
